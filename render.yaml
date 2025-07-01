@@ -3,7 +3,7 @@ services:
     name: studysprint
     runtime: python
     buildCommand: ""
-    startCommand: "gunicorn EXPENSE-TRACKER:app"
+    startCommand: "python app.py"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10
