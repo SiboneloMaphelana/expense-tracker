@@ -8,7 +8,7 @@ def create_app():
     app.secret_key = 'yjcfytccvv,jggytvhjv'
     app.config['DB_NAME'] = 'expenses.db'
     login_manager = LoginManager(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'auth.login'
     bcrypt = Bcrypt(app)
 
     @login_manager.user_loader
