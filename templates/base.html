@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Expense Tracker{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .container.py-4 {
+        flex: 1 0 auto;
+      }
+      .footer {
+        flex-shrink: 0;
+      }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('dashboard.index') }}"><i class="fa-solid fa-wallet me-2"></i>Expense Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'dashboard.index' %}active-link{% endif %}" href="{{ url_for('dashboard.index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'expenses.add_expense' %}active-link{% endif %}" href="{{ url_for('expenses.add_expense') }}">Add</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint in ['expenses.list_expenses', 'expenses.edit_expense'] %}active-link{% endif %}" href="{{ url_for('expenses.list_expenses') }}">All Expenses</a></li>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('incomes.incomes') }}"><i class="fa-solid fa-money-bill-wave me-1"></i>Add Income</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'auth.login' %}active-link{% endif %}" href="{{ url_for('auth.login') }}">Login</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'auth.register' %}active-link{% endif %}" href="{{ url_for('auth.register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+      <span class="dark-mode-toggle ms-3" id="darkModeToggle" title="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+      </span>
+    </div>
+  </div>
+</nav>
+<div class="container py-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</div>
+<!-- Trendy Footer -->
+<footer class="footer mt-auto py-3 bg-transparent border-0">
+  <div class="container text-center">
+    <div class="mb-2">
+      <a href="#" class="text-decoration-none mx-2"><i class="fab fa-github fa-lg"></i></a>
+      <a href="#" class="text-decoration-none mx-2"><i class="fab fa-twitter fa-lg"></i></a>
+      <a href="#" class="text-decoration-none mx-2"><i class="fab fa-linkedin fa-lg"></i></a>
+      <a href="#" class="text-decoration-none mx-2"><i class="fa fa-envelope fa-lg"></i></a>
+    </div>
+    <div class="small">
+      <span id="footerCopyright" class="footer-copyright-text">&copy; {{ 2024 }} Expense Tracker &mdash; Made with <i class="fa fa-heart text-danger"></i> for productivity</span>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script>
+  // Dark mode toggle logic
+  const toggle = document.getElementById('darkModeToggle');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function setDarkMode(on) {
+    if (on) {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('darkMode', 'on');
+      document.getElementById('footerCopyright').style.color = '#a5b4fc';
+    } else {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('darkMode', 'off');
+      document.getElementById('footerCopyright').style.color = '#6c757d';
+    }
+  }
+  // On load
+  const darkPref = localStorage.getItem('darkMode');
+  if (darkPref === 'on' || (darkPref === null && prefersDark)) {
+    setDarkMode(true);
+  } else {
+    setDarkMode(false);
+  }
+  toggle.addEventListener('click', () => {
+    setDarkMode(!document.body.classList.contains('dark-mode'));
+  });
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html> 

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Budgets - Expense Tracker{% endblock %}
+{% block content %}
+<h2 class="mb-4 text-center"><i class="fa-solid fa-bullseye me-2"></i>Manage Budgets</h2>
+<form method="post" class="row g-3 align-items-end justify-content-center mb-4">
+  <div class="col-md-4">
+    <label class="form-label">Category</label>
+    <input type="text" name="category" class="form-control" required placeholder="e.g. Food">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Monthly Budget (R)</label>
+    <input type="number" step="0.01" name="amount" class="form-control" required placeholder="e.g. 1000">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-save me-2"></i>Save</button>
+  </div>
+</form>
+<div class="card shadow-sm">
+  <div class="card-header bg-gradient"><i class="fa-solid fa-list me-2"></i>Budgets for This Month</div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Category</th>
+          <th>Budget (R)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat, amt in budgets %}
+        <tr>
+          <td>{{ cat }}</td>
+          <td>R{{ '%.2f'|format(amt) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2" class="text-center">No budgets set yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<a href="{{ url_for('dashboard.index') }}" class="btn btn-link mt-3"><i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard</a>
+{% endblock %} 

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Incomes - Expense Tracker{% endblock %}
+{% block content %}
+<h2 class="mb-4 text-center"><i class="fa-solid fa-money-bill-wave me-2"></i>Income Tracking</h2>
+<form method="post" class="row g-3 align-items-end justify-content-center mb-4">
+  <div class="col-md-2">
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-control" required value="{{ request.form.date or '' }}">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Amount (R)</label>
+    <input type="number" step="0.01" name="amount" class="form-control" required value="{{ request.form.amount or '' }}">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Category</label>
+    <select name="category" class="form-select" required>
+      {% for cat in income_categories %}
+        <option value="{{ cat }}" {% if request.form.category == cat %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Description</label>
+    <input type="text" name="description" class="form-control" placeholder="e.g. Salary, Bonus" value="{{ request.form.description or '' }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-success w-100"><i class="fa-solid fa-plus me-2"></i>Add Income</button>
+  </div>
+</form>
+<div class="card shadow-sm">
+  <div class="card-header bg-gradient"><i class="fa-solid fa-list me-2"></i>Incomes for This Month</div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Amount (R)</th>
+          <th>Category</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for date, amt, desc, cat in incomes %}
+        <tr>
+          <td>{{ date }}</td>
+          <td>R{{ '%.2f'|format(amt) }}</td>
+          <td>{{ cat }}</td>
+          <td>{{ desc }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-center">No incomes added yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<a href="{{ url_for('dashboard.index') }}" class="btn btn-link mt-3"><i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard</a>
+{% endblock %} 
