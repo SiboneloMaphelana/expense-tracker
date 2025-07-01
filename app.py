@@ -5,7 +5,7 @@ from models import User, init_db
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = 'your_secret_key'
+    app.secret_key = 'yjcfytccvv,jggytvhjv'
     app.config['DB_NAME'] = 'expenses.db'
     login_manager = LoginManager(app)
     login_manager.login_view = 'login'
